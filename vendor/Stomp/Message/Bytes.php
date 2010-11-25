@@ -27,7 +27,7 @@ require_once 'Stomp/Message.php';
  * @author Dejan Bosanac <dejan@nighttale.net>
  * @version $Revision: 23 $
  */
-class Stomp_Message_Bytes extends Stomp_Message
+class FuseForge_Stomp_Message_Bytes extends FuseForge_Stomp_Message
 {
     /**
      * Constructor

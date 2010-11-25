@@ -25,7 +25,7 @@ require_once 'Stomp/Message.php';
  *
  * @package Stomp
  */
-class StompMessageMap extends StompMessage
+class FuseForge_StompMessageMap extends FuseForge_StompMessage
 {
     public $map;
     
@@ -37,7 +37,7 @@ class StompMessageMap extends StompMessage
      */
     function __construct ($msg, $headers = null)
     {
-        if ($msg instanceof StompFrame) {
+        if ($msg instanceof FuseForge_StompFrame) {
             $this->_init($msg->command, $msg->headers, $msg->body);
             $this->map = json_decode($msg->body, true);
         } else {

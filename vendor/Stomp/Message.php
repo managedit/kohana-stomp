@@ -25,7 +25,7 @@ require_once 'Stomp/Frame.php';
  *
  * @package Stomp
  */
-class StompMessage extends StompFrame
+class FuseForge_StompMessage extends FuseForge_StompFrame
 {
     public function __construct ($body, $headers = null)
     {

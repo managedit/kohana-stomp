@@ -23,7 +23,7 @@
  *
  * @package Stomp
  */
-class StompFrame
+class FuseForge_StompFrame
 {
     public $command;
     public $headers = array();
@@ -51,7 +51,7 @@ class StompFrame
         
         if ($this->command == 'ERROR') {
             require_once 'Exception.php';
-            throw new StompException($this->headers['message'], 0, $this->body);
+            throw new FuseForge_StompException($this->headers['message'], 0, $this->body);
         }
     }
     

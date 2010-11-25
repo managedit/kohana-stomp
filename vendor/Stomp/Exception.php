@@ -24,7 +24,7 @@
  *
  * @package Stomp
  */
-class StompException extends Exception
+class FuseForge_StompException extends Exception
 {
     protected $_details;
     

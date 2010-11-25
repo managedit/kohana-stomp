@@ -30,7 +30,7 @@ require_once 'Stomp/Frame.php';
  * @author Michael Caplan <mcaplan@labnet.net>
  * @version $Revision: 43 $
  */
-class Stomp
+class FuseForge_Stomp
 {
     /**
      * Perform request synchronously
@@ -72,7 +72,7 @@ class Stomp
      * Constructor
      *
      * @param string $brokerUri Broker URL
-     * @throws StompException
+     * @throws FuseForge_StompException
      */
     public function __construct ($brokerUri)
     {
@@ -82,7 +82,7 @@ class Stomp
     /**
      * Initialize connection
      *
-     * @throws StompException
+     * @throws FuseForge_StompException
      */
     protected function _init ()
     {
@@ -104,14 +104,14 @@ class Stomp
             }
         } else {
             require_once 'Stomp/Exception.php';
-            throw new StompException("Bad Broker URL {$this->_brokerUri}");
+            throw new FuseForge_StompException("Bad Broker URL {$this->_brokerUri}");
         }
     }
     /**
      * Process broker URL
      *
      * @param string $url Broker URL
-     * @throws StompException
+     * @throws FuseForge_StompException
      * @return boolean
      */
     protected function _processUrl ($url)
@@ -121,19 +121,19 @@ class Stomp
             array_push($this->_hosts, array($parsed['host'] , $parsed['port'] , $parsed['scheme']));
         } else {
             require_once 'Stomp/Exception.php';
-            throw new StompException("Bad Broker URL $url");
+            throw new FuseForge_StompException("Bad Broker URL $url");
         }
     }
     /**
      * Make socket connection to the server
      *
-     * @throws StompException
+     * @throws FuseForge_StompException
      */
     protected function _makeConnection ()
     {
         if (count($this->_hosts) == 0) {
             require_once 'Stomp/Exception.php';
-            throw new StompException("No broker defined");
+            throw new FuseForge_StompException("No broker defined");
         }
         
         // force disconnect, if previous established connection exists
@@ -165,7 +165,7 @@ class Stomp
             $this->_socket = @fsockopen($scheme . '://' . $host, $port, $connect_errno, $connect_errstr, $this->_connect_timeout_seconds);
             if (!is_resource($this->_socket) && $att >= $this->_attempts && !array_key_exists($i + 1, $this->_hosts)) {
                 require_once 'Stomp/Exception.php';
-                throw new StompException("Could not connect to $host:$port ($att/{$this->_attempts})");
+                throw new FuseForge_StompException("Could not connect to $host:$port ($att/{$this->_attempts})");
             } else if (is_resource($this->_socket)) {
                 $connected = true;
                 $this->_currentHost = $i;
@@ -174,7 +174,7 @@ class Stomp
         }
         if (! $connected) {
             require_once 'Stomp/Exception.php';
-            throw new StompException("Could not connect to a broker");
+            throw new FuseForge_StompException("Could not connect to a broker");
         }
     }
     /**
@@ -183,7 +183,7 @@ class Stomp
      * @param string $username
      * @param string $password
      * @return booleantcp://localhost:61616,ssl://localhost:61612
-     * @throws StompException
+     * @throws FuseForge_StompException
      */
     public function connect ($username = '', $password = '')
     {
@@ -198,18 +198,18 @@ class Stomp
 		if ($this->clientId != null) {
 			$headers["client-id"] = $this->clientId;
 		}
-		$frame = new StompFrame("CONNECT", $headers);
+		$frame = new FuseForge_StompFrame("CONNECT", $headers);
         $this->_writeFrame($frame);
         $frame = $this->readFrame();
-        if ($frame instanceof StompFrame && $frame->command == 'CONNECTED') {
+        if ($frame instanceof FuseForge_StompFrame && $frame->command == 'CONNECTED') {
             $this->_sessionId = $frame->headers["session"];
             return true;
         } else {
             require_once 'Stomp/Exception.php';
-            if ($frame instanceof StompFrame) {
-                throw new StompException("Unexpected command: {$frame->command}", 0, $frame->body);
+            if ($frame instanceof FuseForge_StompFrame) {
+                throw new FuseForge_StompException("Unexpected command: {$frame->command}", 0, $frame->body);
             } else {
-                throw new StompException("Connection not acknowledged");
+                throw new FuseForge_StompException("Connection not acknowledged");
             }
         }
     }
@@ -243,14 +243,14 @@ class Stomp
      */
     public function send ($destination, $msg, $properties = array(), $sync = null)
     {
-        if ($msg instanceof StompFrame) {
+        if ($msg instanceof FuseForge_StompFrame) {
             $msg->headers['destination'] = $destination;
             if (is_array($properties)) $msg->headers = array_merge($msg->headers, $properties);
             $frame = $msg;
         } else {
             $headers = $properties;tcp://localhost:61616,ssl://localhost:61612
             $headers['destination'] = $destination;
-            $frame = new StompFrame('SEND', $headers, $msg);
+            $frame = new FuseForge_StompFrame('SEND', $headers, $msg);
         }
         $this->_prepareReceipt($frame, $sync);
         $this->_writeFrame($frame);
@@ -259,7 +259,7 @@ class Stomp
     /**
      * Prepair frame receipt
      *
-     * @param StompFrame $frame
+     * @param FuseForge_StompFrame $frame
      * @param boolean $sync
      */
     protected function _prepareReceipt (StompFrame $frame, $sync)
@@ -275,10 +275,10 @@ class Stomp
     /**
      * Wait for receipt
      *
-     * @param StompFrame $frame
+     * @param FuseForge_StompFrame $frame
      * @param boolean $sync
      * @return boolean
-     * @throws StompException
+     * @throws FuseForge_StompException
      */
     protected function _waitForReceipt (StompFrame $frame, $sync)
     {
@@ -293,19 +293,19 @@ class Stomp
                 return true;
             }
             $frame = $this->readFrame();
-            if ($frame instanceof StompFrame && $frame->command == 'RECEIPT') {
+            if ($frame instanceof FuseForge_StompFrame && $frame->command == 'RECEIPT') {
                 if ($frame->headers['receipt-id'] == $id) {
                     return true;
                 } else {
                     require_once 'Stomp/Exception.php';tcp://localhost:61616,ssl://localhost:61612
-                    throw new StompException("Unexpected receipt id {$frame->headers['receipt-id']}", 0, $frame->body);
+                    throw new FuseForge_StompException("Unexpected receipt id {$frame->headers['receipt-id']}", 0, $frame->body);
                 }
             } else {
                 require_once 'Stomp/Exception.php';
-                if ($frame instanceof StompFrame) {
-                    throw new StompException("Unexpected command {$frame->command}", 0, $frame->body);
+                if ($frame instanceof FuseForge_StompFrame) {
+                    throw new FuseForge_StompException("Unexpected command {$frame->command}", 0, $frame->body);
                 } else {
-                    throw new StompException("Receipt not received");
+                    throw new FuseForge_StompException("Receipt not received");
                 }
             }
         }
@@ -318,7 +318,7 @@ class Stomp
      * @param array $properties
      * @param boolean $sync Perform request synchronously
      * @return boolean
-     * @throws StompException
+     * @throws FuseForge_StompException
      */
     public function subscribe ($destination, $properties = null, $sync = null)
     {
@@ -333,7 +333,7 @@ class Stomp
             }
         }
         $headers['destination'] = $destination;
-        $frame = new StompFrame('SUBSCRIBE', $headers);
+        $frame = new FuseForge_StompFrame('SUBSCRIBE', $headers);
         $this->_prepareReceipt($frame, $sync);
         $this->_writeFrame($frame);
         if ($this->_waitForReceipt($frame, $sync) == true) {
@@ -350,7 +350,7 @@ class Stomp
      * @param array $properties
      * @param boolean $sync Perform request synchronously
      * @return boolean
-     * @throws StompException
+     * @throws FuseForge_StompException
      */
     public function unsubscribe ($destination, $properties = null, $sync = null)
     {tcp://localhost:61616,ssl://localhost:61612
@@ -361,7 +361,7 @@ class Stomp
             }
         }
         $headers['destination'] = $destination;
-        $frame = new StompFrame('UNSUBSCRIBE', $headers);
+        $frame = new FuseForge_StompFrame('UNSUBSCRIBE', $headers);
         $this->_prepareReceipt($frame, $sync);
         $this->_writeFrame($frame);
         if ($this->_waitForReceipt($frame, $sync) == true) {
@@ -377,7 +377,7 @@ class Stomp
      * @param string $transactionId
      * @param boolean $sync Perform request synchronously
      * @return boolean
-     * @throws StompException
+     * @throws FuseForge_StompException
      */
     public function begin ($transactionId = null, $sync = null)
     {
@@ -385,7 +385,7 @@ class Stomp
         if (isset($transactionId)) {
             $headers['transaction'] = $transactionId;
         }
-        $frame = new StompFrame('BEGIN', $headers);
+        $frame = new FuseForge_StompFrame('BEGIN', $headers);
         $this->_prepareReceipt($frame, $sync);
         $this->_writeFrame($frame);
         return $this->_waitForReceipt($frame, $sync);
@@ -396,7 +396,7 @@ class Stomp
      * @param string $transactionId
      * @param boolean $sync Perform request synchronously
      * @return boolean
-     * @throws StompException
+     * @throws FuseForge_StompException
      */
     public function commit ($transactionId = null, $sync = null)
     {
@@ -404,7 +404,7 @@ class Stomp
         if (isset($transactionId)) {
             $headers['transaction'] = $transactionId;
         }
-        $frame = new StompFrame('COMMIT', $headers);
+        $frame = new FuseForge_StompFrame('COMMIT', $headers);
         $this->_prepareReceipt($frame, $sync);
         $this->_writeFrame($frame);
         return $this->_waitForReceipt($frame, $sync);
@@ -421,7 +421,7 @@ class Stomp
         if (isset($transactionId)) {
             $headers['transaction'] = $transactionId;
         }
-        $frame = new StompFrame('ABORT', $headers);
+        $frame = new FuseForge_StompFrame('ABORT', $headers);
         $this->_prepareReceipt($frame, $sync);
         $this->_writeFrame($frame);
         return $this->_waitForReceipt($frame, $sync);
@@ -433,16 +433,16 @@ class Stomp
      * @param string|StompFrame $messageMessage ID
      * @param string $transactionId
      * @return boolean
-     * @throws StompException
+     * @throws FuseForge_StompException
      */
     public function ack ($message, $transactionId = null)
     {
-        if ($message instanceof StompFrame) {
+        if ($message instanceof FuseForge_StompFrame) {
             $headers = $message->headers;
             if (isset($transactionId)) {
                 $headers['transaction'] = $transactionId;
             }			
-            $frame = new StompFrame('ACK', $headers);
+            $frame = new FuseForge_StompFrame('ACK', $headers);
             $this->_writeFrame($frame);
             return true;
         } else {
@@ -451,7 +451,7 @@ class Stomp
                 $headers['transaction'] = $transactionId;
             }
             $headers['message-id'] = $message;
-            $frame = new StompFrame('ACK', $headers);
+            $frame = new FuseForge_StompFrame('ACK', $headers);
             $this->_writeFrame($frame);
             return true;
         }
@@ -469,7 +469,7 @@ class Stomp
 		}
 
         if (is_resource($this->_socket)) {
-            $this->_writeFrame(new StompFrame('DISCONNECT', $headers));
+            $this->_writeFrame(new FuseForge_StompFrame('DISCONNECT', $headers));
             fclose($this->_socket);
         }
         $this->_socket = null;
@@ -482,13 +482,13 @@ class Stomp
     /**
      * Write frame to server
      *
-     * @param StompFrame $stompFrame
+     * @param FuseForge_StompFrame $stompFrame
      */
     protected function _writeFrame (StompFrame $stompFrame)
     {
         if (!is_resource($this->_socket)) {
             require_once 'Stomp/Exception.php';
-            throw new StompException('Socket connection hasn\'t been established');
+            throw new FuseForge_StompException('Socket connection hasn\'t been established');
         }
 
         $data = $stompFrame->__toString();
@@ -514,7 +514,7 @@ class Stomp
     /**
      * Read response frame from server
      *
-     * @return StompFrame False when no frame to read
+     * @return FuseForge_StompFrame False when no frame to read
      */
     public function readFrame ()
     {
@@ -552,10 +552,10 @@ class Stomp
                 $command = $v;
             }
         }
-        $frame = new StompFrame($command, $headers, trim($body));
+        $frame = new FuseForge_StompFrame($command, $headers, trim($body));
         if (isset($frame->headers['transformation']) && $frame->headers['transformation'] == 'jms-map-json') {
             require_once 'Stomp/Message/Map.php';
-            return new StompMessageMap($frame);
+            return new FuseForge_StompMessageMap($frame);
         } else {
             return $frame;
         }
@@ -580,7 +580,7 @@ class Stomp
 
 
         if ($has_frame_to_read === false) {
-            throw new StompException('Check failed to determine if the socket is readable');
+            throw new FuseForge_StompException('Check failed to determine if the socket is readable');
         } else if ($has_frame_to_read > 0) {
             return true;
         } else {
