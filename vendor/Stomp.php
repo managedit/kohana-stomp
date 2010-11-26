@@ -236,7 +236,7 @@ class FuseForge_Stomp
      * Send a message to a destination in the messaging system 
      *
      * @param string $destination Destination queue
-     * @param string|StompFrame $msg Message
+     * @param string|FuseForge_StompFrame $msg Message
      * @param array $properties
      * @param boolean $sync Perform request synchronously
      * @return boolean
@@ -262,7 +262,7 @@ class FuseForge_Stomp
      * @param FuseForge_StompFrame $frame
      * @param boolean $sync
      */
-    protected function _prepareReceipt (StompFrame $frame, $sync)
+    protected function _prepareReceipt (FuseForge_StompFrame $frame, $sync)
     {
         $receive = $this->sync;
         if ($sync !== null) {
@@ -280,7 +280,7 @@ class FuseForge_Stomp
      * @return boolean
      * @throws FuseForge_StompException
      */
-    protected function _waitForReceipt (StompFrame $frame, $sync)
+    protected function _waitForReceipt (FuseForge_StompFrame $frame, $sync)
     {
 
         $receive = $this->sync;
@@ -430,7 +430,7 @@ class FuseForge_Stomp
      * Acknowledge consumption of a message from a subscription
 	 * Note: This operation is always asynchronous
      *
-     * @param string|StompFrame $messageMessage ID
+     * @param string|FuseForge_StompFrame $messageMessage ID
      * @param string $transactionId
      * @return boolean
      * @throws FuseForge_StompException
@@ -484,7 +484,7 @@ class FuseForge_Stomp
      *
      * @param FuseForge_StompFrame $stompFrame
      */
-    protected function _writeFrame (StompFrame $stompFrame)
+    protected function _writeFrame (FuseForge_StompFrame $stompFrame)
     {
         if (!is_resource($this->_socket)) {
             require_once 'Stomp/Exception.php';

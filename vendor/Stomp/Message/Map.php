@@ -32,7 +32,7 @@ class FuseForge_StompMessageMap extends FuseForge_StompMessage
     /**
      * Constructor
      *
-     * @param StompFrame|string $msg
+     * @param FuseForge_StompFrame|string $msg
      * @param array $headers
      */
     function __construct ($msg, $headers = null)
