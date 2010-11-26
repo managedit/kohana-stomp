@@ -297,7 +297,7 @@ class FuseForge_Stomp
                 if ($frame->headers['receipt-id'] == $id) {
                     return true;
                 } else {
-                    require_once 'Stomp/Exception.php';tcp://localhost:61616,ssl://localhost:61612
+                    require_once 'Stomp/Exception.php';
                     throw new FuseForge_StompException("Unexpected receipt id {$frame->headers['receipt-id']}", 0, $frame->body);
                 }
             } else {
