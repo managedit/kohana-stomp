@@ -116,7 +116,7 @@ class FuseForge_Stomp
      */
     protected function _processUrl ($url)
     {
-        $parsed = parse_url($url);tcp://localhost:61616,ssl://localhost:61612
+        $parsed = parse_url($url);
         if ($parsed) {
             array_push($this->_hosts, array($parsed['host'] , $parsed['port'] , $parsed['scheme']));
         } else {
@@ -182,7 +182,7 @@ class FuseForge_Stomp
      *
      * @param string $username
      * @param string $password
-     * @return booleantcp://localhost:61616,ssl://localhost:61612
+     * @return boolean
      * @throws FuseForge_StompException
      */
     public function connect ($username = '', $password = '')
@@ -248,7 +248,7 @@ class FuseForge_Stomp
             if (is_array($properties)) $msg->headers = array_merge($msg->headers, $properties);
             $frame = $msg;
         } else {
-            $headers = $properties;tcp://localhost:61616,ssl://localhost:61612
+            $headers = $properties;
             $headers['destination'] = $destination;
             $frame = new FuseForge_StompFrame('SEND', $headers, $msg);
         }
@@ -353,7 +353,7 @@ class FuseForge_Stomp
      * @throws FuseForge_StompException
      */
     public function unsubscribe ($destination, $properties = null, $sync = null)
-    {tcp://localhost:61616,ssl://localhost:61612
+    {
         $headers = array();
         if (isset($properties)) {
             foreach ($properties as $name => $value) {
