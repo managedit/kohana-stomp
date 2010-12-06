@@ -9,6 +9,11 @@ class Stomp {
 	protected $_config;
 	protected $_stomp;
 
+	/**
+	 *
+	 * @param string $config_group
+	 * @return Stomp
+	 */
 	public static function instance($config_group = 'default')
 	{
 		if ( ! isset(Stomp::$instances[$config_group]))
@@ -27,8 +32,9 @@ class Stomp {
 		$this->_config = Kohana::config('stomp')->$config_group;
 
 		$this->_stomp = new FuseForge_Stomp($this->_config['broker_uri']);
-		$this->_stomp->sync = TRUE;
+//		$this->_stomp->sync = TRUE;
 		$this->_stomp->connect($this->_config['username'], $this->_config['password']);
+		$this->_stomp->setReadTimeout($this->_config['read_timeout']);
 
 	}
 

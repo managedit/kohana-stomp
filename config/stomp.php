@@ -4,6 +4,6 @@ return array (
 		'broker_uri'   => 'tcp://localhost:61613',
 		'username'     => '',
 		'password'     => '',
-		'destination'  => '/queue/test'
+		'read_timeout' => 10,
 	),
 );
