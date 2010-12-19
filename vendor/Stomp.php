@@ -522,7 +522,7 @@ class FuseForge_Stomp
             return false;
         }
         
-        $rb = 1024;
+        $rb = 20971520; // Change by Kiall - Max 20 MB
         $data = '';
         $end = false;
         
