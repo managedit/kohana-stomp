@@ -5,5 +5,6 @@ return array (
 		'username'     => '',
 		'password'     => '',
 		'read_timeout' => 10,
+		'sync'         => TRUE,
 	),
 );

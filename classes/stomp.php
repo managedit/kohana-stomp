@@ -32,10 +32,10 @@ class Stomp {
 		$this->_config = Kohana::config('stomp')->$config_group;
 
 		$this->_stomp = new FuseForge_Stomp($this->_config['broker_uri']);
-//		$this->_stomp->sync = TRUE;
+		$this->_stomp->sync = $this->_config['sync'];
+
 		$this->_stomp->connect($this->_config['username'], $this->_config['password']);
 		$this->_stomp->setReadTimeout($this->_config['read_timeout']);
-
 	}
 
 	public function __destruct()
@@ -45,6 +45,9 @@ class Stomp {
 
 	public function send($destination, $message, $properties = array(), $sync = NULL)
 	{
+		if (strlen($message) > 800)
+			throw new Exception('Messages over 800 characters are unreliable. Fixme!');
+		
 		return $this->_stomp->send($destination, $message, $properties, $sync);
 	}
 
