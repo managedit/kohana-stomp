@@ -2,8 +2,8 @@
 <project name="kohana-stomp" basedir="." default="main">
 	<property file="build.properties" />
 
-	<import file="build/build-kohana-module-common.xml" />
-	<import file="build/build-common.xml" />
+	<import file="build/common-kohana-module.xml" />
+	<import file="build/common.xml" />
 
 	<property name="app.description" value="Kohana Stomp Module" /> <!-- Module Description -->
 	<property name="kohana.module.name" value="stomp" /> <!-- Module Name -->
