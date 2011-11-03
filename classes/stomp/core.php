@@ -29,7 +29,7 @@ class Stomp_Core {
 	public function __construct($config_group)
 	{
 		$this->_config_group = $config_group;
-		$this->_config = Kohana::config('stomp')->$config_group;
+		$this->_config = Kohana::$config->load('stomp.'.$config_group);
 
 		$this->_stomp = new FuseForge_Stomp($this->_config['broker_uri']);
 		$this->_stomp->sync = $this->_config['sync'];
@@ -45,6 +45,10 @@ class Stomp_Core {
 
 	public function send($destination, $message, $properties = array(), $sync = NULL)
 	{
+		Kohana::$log->add(Log::DEBUG, "Stomp: Sending message to :destination", array(
+			':destination' => $destination,
+		));
+		
 		return $this->_stomp->send($destination, $message, $properties, $sync);
 	}
 
